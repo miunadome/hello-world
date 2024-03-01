@@ -3,20 +3,6 @@
 
 #include "GitHelper.h"
 
-GitHelper::GitHelper()
-{
-}
-
-GitHelper::~GitHelper()
-{
-}
-
-
-/** GitHelper **/
-//#include "GitPushPrivatePCH.h"
-
-//#include "GitHelper.h"
-
 #include <string>
 #include <iostream>
 #include <cstdio>
@@ -33,7 +19,7 @@ FString FGitHelper::ExecuteWindowsCommand(FString command)
 	}
 	char buffer[128];
 	std::string result = "";
-	FString result2 = "";
+	//FString result2 = "";
 	while (!feof(pipe.get()))
 	{
 		if (fgets(buffer, 128, pipe.get()) != NULL)
@@ -98,7 +84,7 @@ bool FGitHelper::IsGitRepo(FString path)
 	return FPaths::DirectoryExists(gitPath);
 }
 
-GitPushReturn FGitHelper::PushCommit(FString remoteHostName, FString destinationBranch)
+GitReturn FGitHelper::PushCommit(FString remoteHostName, FString destinationBranch)
 {
 	// git push source:dest --porcelain
 	FString workingDir = FPaths::GetPath(FPaths::GetProjectFilePath());
@@ -107,7 +93,7 @@ GitPushReturn FGitHelper::PushCommit(FString remoteHostName, FString destination
 	FString command = FString::Printf(TEXT("%s: && cd \"%s\" && git push %s master:%s --porcelain 2>&1"), *workingDrive, *workingDir, *remoteHostName, *destinationBranch);
 	FString result = FGitHelper::ExecuteWindowsCommand(command);
 
-	GitPushReturn output;
+	GitReturn output;
 	//Posible return stuff: "fatal", "error", "Everything up-to-date"
 	output.bSuccessful = !(result.Contains(TEXT("fatal")) || result.Contains(TEXT("error")));
 	output.consoleReturn = result;
@@ -115,16 +101,16 @@ GitPushReturn FGitHelper::PushCommit(FString remoteHostName, FString destination
 	return output;
 }
 
-GitPushReturn FGitHelper::CheckoutBranch(FString Branch )
+GitReturn FGitHelper::CheckoutBranch(FString Branch )
 {
-	// git push source:dest --porcelain
+
 	FString workingDir = FPaths::GetPath(FPaths::GetProjectFilePath());
 	FString workingDrive = FString().AppendChar(workingDir.GetCharArray()[0]);
 
 	FString command = FString::Printf(TEXT("%s: && cd \"%s\" && git checkout %s  2>&1"), *workingDrive, *workingDir, *Branch);
 	FString result = FGitHelper::ExecuteWindowsCommand(command);
 
-	GitPushReturn output;
+	GitReturn output;
 	//Posible return stuff: "fatal", "error", "Everything up-to-date"
 	output.bSuccessful = !(result.Contains(TEXT("fatal")) || result.Contains(TEXT("error")));
 	output.consoleReturn = result;
@@ -142,3 +128,14 @@ FString FGitHelper::GetCurrentTag()
 
 	return result;
 };
+
+FString FGitHelper::GetCurrentBranch() 
+{
+	FString workingDir = FPaths::GetPath(FPaths::GetProjectFilePath());
+	FString workingDrive = FString().AppendChar(workingDir.GetCharArray()[0]);
+
+	FString command = FString::Printf(TEXT("%s: && cd \"%s\" && git branch --show-current 2>&1"), *workingDrive, *workingDir);
+	FString result = ExecuteWindowsCommand(command);
+
+	return result;
+}

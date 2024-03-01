@@ -39,6 +39,7 @@ void FGitDemoModule::StartupModule()
 	branches = FGitHelper::GetBranches();
 	remoteHosts = FGitHelper::GetRemoteHosts();
 	currentTag = FGitHelper::GetCurrentTag();
+	currentBranch = FGitHelper::GetCurrentBranch();
 	// 转换为TSharedPtr数组
 	for (auto& Branch : branches)
 	{
@@ -70,15 +71,6 @@ TSharedRef<SDockTab> FGitDemoModule::OnSpawnPluginTab(const FSpawnTabArgs& Spawn
 		LOCTEXT("currenttag", "Tag: {0} "),
 		FText::FromString(currentTag)
 	);
-	//FText branch = FText::Format(
-	//	LOCTEXT("currentbranch", "branch: {0} "),
-	//	FText::FromString(currentTag)
-	//);
-	// 
-	//FText branch = FText::Format(
-	//	LOCTEXT("currentbranch", "branch: {0} "),
-	//	FText::FromString(currentTag)
-	//);
 
 	return SNew(SDockTab)
 		.TabRole(ETabRole::NomadTab)
@@ -87,13 +79,10 @@ TSharedRef<SDockTab> FGitDemoModule::OnSpawnPluginTab(const FSpawnTabArgs& Spawn
 			SNew(SVerticalBox)
 				+SVerticalBox::Slot().AutoHeight()[
 			SNew(SHorizontalBox)
-				+ SHorizontalBox::Slot()[
+				+ SHorizontalBox::Slot()
+				[
 					SNew(STextBlock).Text(Tag)
 				]
-				//+ SHorizontalBox::Slot()[
-				//	SNew(SListView< TSharedPtr<FString> >).ListItemsSource(&SharedBranches)
-				//		.OnGenerateRow(this, &FGitDemoModule::OnGenerateRow)
-				//]
 				+ SHorizontalBox::Slot()[
 					SNew(SComboBox<TSharedPtr<FString>>)
 						.OptionsSource(&SharedBranches) // 设置数据源
@@ -114,8 +103,6 @@ TSharedRef<SDockTab> FGitDemoModule::OnSpawnPluginTab(const FSpawnTabArgs& Spawn
 
 					//CreateComboBoxWithLambda(SharedBranches)
 
-
-
 				//		.OnSelectionChanged_Lambda([](TSharedPtr<FString> NewValue, ESelectInfo::Type Type)
 				//			{
 				//				OnComboBoxSelectionChanged(NewValue, Type);
@@ -127,7 +114,25 @@ TSharedRef<SDockTab> FGitDemoModule::OnSpawnPluginTab(const FSpawnTabArgs& Spawn
 				//						})
 				//				];
 				//]
-				]]
+				]
+
+					+SHorizontalBox::Slot()
+					[
+						SNew(SButton).Text(FText::FromString("Switch branch")).OnClicked_Lambda([]()->FReply {
+							FGitHelper::CheckoutBranch();
+
+							return FReply::Handled();
+							})
+					]
+				]
+				+ SVerticalBox::Slot().AutoHeight()
+				[
+					SNew(SButton).Text(FText::FromString("Force Push")).OnClicked_Lambda([]()->FReply {
+						FGitHelper::PushCommit("origin","aaa");
+
+						return FReply::Handled();
+						})
+				]
 		];
 }
 

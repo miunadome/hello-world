@@ -4,24 +4,7 @@
 
 #include "CoreMinimal.h"
 
-/**
- * 
- */
-class GITDEMO_API GitHelper
-{
-public:
-	GitHelper();
-	~GitHelper();
-};
-
-
-
-//#pragma once
-//#include "GitPushPrivatePCH.h"
-//
-//#include "GitPush.h"
-
-struct GitPushReturn
+struct GitReturn
 {
 	bool bSuccessful;
 	FString consoleReturn;
@@ -39,12 +22,18 @@ public:
 	/** Check if a folder is a git repo **/
 	static bool IsGitRepo(FString path);
 	/** Push Git Commit to repo **/
-	static GitPushReturn PushCommit(FString remoteHostName, FString destinationBranch);
+	static GitReturn PushCommit(FString remoteHostName, FString destinationBranch);
 	/** Get current tag **/
 	static FString GetCurrentTag();
 	/** Get current branch **/
 	static FString GetCurrentBranch();
-	/** CheckoutBranch **/
-	static GitPushReturn CheckoutBranch(FString Branch = "aaa");
+	/** Checkout Branch **/
+	static GitReturn CheckoutBranch(FString Branch = "aaa");
+
+
+
+	///** Force push **/
+	//static GitReturn ForcePush(FString Branch = "aaa");
+
 
 };
