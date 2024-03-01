@@ -27,6 +27,12 @@ public:
 
 	/** All remote hosts - also collected at begin of editor startup **/
 	TArray<FString> remoteHosts;
+
+	FString currentTag;
+	FString currentBranch;
+	TArray<TSharedPtr<FString>> SharedBranches; // 用于SListView的数据
+
+
 	
 private:
 
@@ -34,6 +40,8 @@ private:
 
 	TSharedRef<class SDockTab> OnSpawnPluginTab(const class FSpawnTabArgs& SpawnTabArgs);
 
+	TSharedRef<ITableRow> OnGenerateRow(TSharedPtr<FString> Item, const TSharedRef<STableViewBase>& OwnerTable);
+	TSharedRef<SWidget> CreateComboBoxWithLambda(TArray<TSharedPtr<FString>>);
 private:
 	TSharedPtr<class FUICommandList> PluginCommands;
 };

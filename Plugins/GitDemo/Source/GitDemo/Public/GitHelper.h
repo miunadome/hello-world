@@ -40,4 +40,11 @@ public:
 	static bool IsGitRepo(FString path);
 	/** Push Git Commit to repo **/
 	static GitPushReturn PushCommit(FString remoteHostName, FString destinationBranch);
+	/** Get current tag **/
+	static FString GetCurrentTag();
+	/** Get current branch **/
+	static FString GetCurrentBranch();
+	/** CheckoutBranch **/
+	static GitPushReturn CheckoutBranch(FString Branch = "aaa");
+
 };
